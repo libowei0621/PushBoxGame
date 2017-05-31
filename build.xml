@@ -1,0 +1,29 @@
+<project default="run">
+	
+	<property environment="env"/>
+	<property name="SRC_DIR" value="src" />
+	<property name="CLASS_DIR" value="bin" />
+
+
+	<path id="compile.path">
+		<pathelement path="${CLASS_DIR}"/>
+	</path>
+
+	<target name="clean">
+		<delete dir="${CLASS_DIR}"/>
+	</target>
+	
+	<target name="compile" depends="clean">
+		<mkdir dir="${CLASS_DIR}" />
+		<javac srcdir="${SRC_DIR}" destdir="${CLASS_DIR}" classpathref="compile.path" includeantruntime="false"/>
+	</target>
+	
+	<target name="run" depends="compile">
+		<java classname="GameFrame" fork="true">
+			<classpath>
+				<pathelement path="${CLASS_DIR}"/>
+			</classpath>
+		</java>
+	</target>
+
+</project>

@@ -62,18 +62,16 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         
         width = getWidth();
         height = getHeight();
-        initMap();
         addKeyListener(this);
-        addMouseListener(this);
+        addMouseListener(this);  
         
-        
-        // add restart and next level buttoms
+        // add restart and next level buttons
         JButton nextLevel = new JButton("Next Level");
         JButton restart = new JButton("Restart");
         add(nextLevel);
         add(restart);
-        restart.setBounds((600/2 - 100)/2, height - 100, 100, 50);
-        nextLevel.setBounds((600/2 - 100)/2 + width/2, height - 100, 100, 50);
+        restart.setBounds((600/2 - 100)/2, 600 - 100, 100, 50);
+        nextLevel.setBounds((600/2 - 100)/2 + 600/2, 600 - 100, 100, 50);
         
         restart.addActionListener(new ActionListener()
         {
@@ -92,15 +90,20 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                level++;
-                initMap();
-                update(getGraphics());
-                
+                if(level < GameMapFactory.gameLevels - 1)
+                {
+                    level++;
+                    initMap();
+                    update(getGraphics());
+                }
+                else
+                {
+                    displayToast("This is the final level.");
+                }
             }
-        });
+        }); 
         
-        // paint out buttons
-        super.paint(getGraphics());
+        initMap();
     }
     
     // init map
@@ -117,6 +120,10 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         // get focus
         setFocusable(true);
         requestFocus();
+        
+        // clear the screen and paint map
+        super.paint(getGraphics());
+        paint(getGraphics());
     }
     
     // get player's position on map
@@ -145,7 +152,7 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         mapRow = map.length;
         mapCol = map[0].length;
         leftX = (width - mapRow * 30) / 2;
-        leftY = (height - mapCol * 30) / 2;
+        leftY = (height - mapCol * 30) / 2 - 50;
     }
     
     // load all pictures

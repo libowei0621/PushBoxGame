@@ -9,10 +9,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Stack;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class GameFrame extends JFrame implements ActionListener, MouseListener, KeyListener
+public class GameFrame extends JFrame implements MouseListener, KeyListener
 {
 
     private static final long serialVersionUID = -5727453900716058849L;
@@ -52,7 +53,8 @@ public class GameFrame extends JFrame implements ActionListener, MouseListener, 
         setSize(600, 600);
         setResizable(false);
         setLocation(300, 20);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);      
+        setLayout(null);
         setVisible(true);
         
         //get pics
@@ -60,10 +62,45 @@ public class GameFrame extends JFrame implements ActionListener, MouseListener, 
         
         width = getWidth();
         height = getHeight();
-        setFocusable(true);
         initMap();
         addKeyListener(this);
         addMouseListener(this);
+        
+        
+        // add restart and next level buttoms
+        JButton nextLevel = new JButton("Next Level");
+        JButton restart = new JButton("Restart");
+        add(nextLevel);
+        add(restart);
+        restart.setBounds((600/2 - 100)/2, height - 100, 100, 50);
+        nextLevel.setBounds((600/2 - 100)/2 + width/2, height - 100, 100, 50);
+        
+        restart.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                initMap();
+                update(getGraphics());
+            }
+        });
+        
+        nextLevel.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                level++;
+                initMap();
+                update(getGraphics());
+                
+            }
+        });
+        
+        // paint out buttons
+        super.paint(getGraphics());
     }
     
     // init map
@@ -73,6 +110,13 @@ public class GameFrame extends JFrame implements ActionListener, MouseListener, 
         list.clear();
         getMapSizeAndPosition();
         getPlayerPosition();
+        
+        // reset undo flag
+        acceptUndo = true;
+        
+        // get focus
+        setFocusable(true);
+        requestFocus();
     }
     
     // get player's position on map
@@ -443,7 +487,9 @@ public class GameFrame extends JFrame implements ActionListener, MouseListener, 
         
         if(isFinished())
         {
+            // when game finish, lose focus, and reject all undo operation
             acceptUndo = false;
+            setFocusable(false);
             JOptionPane.showMessageDialog(null, "Finished");
         }
         
@@ -489,13 +535,6 @@ public class GameFrame extends JFrame implements ActionListener, MouseListener, 
 
     @Override
     public void mouseExited(MouseEvent e)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e)
     {
         // TODO Auto-generated method stub
         

@@ -90,7 +90,7 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
             public void actionPerformed(ActionEvent e)
             {
                 initMap();
-                update(getGraphics());
+                repaint();
             }
         });
         
@@ -104,7 +104,7 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
                 {
                     level++;
                     initMap();
-                    update(getGraphics());
+                    repaint();
                 }
                 else
                 {
@@ -123,7 +123,7 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
                 {
                     level--;
                     initMap();
-                    update(getGraphics());
+                    repaint();
                 }
                 else
                 {

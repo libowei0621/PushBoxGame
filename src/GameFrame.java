@@ -63,14 +63,24 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         width = getWidth();
         height = getHeight();
         addKeyListener(this);
-        addMouseListener(this);  
-        
+        addMouseListener(this);     
+
+        setButtons();
+        initMap();
+    }
+    
+    // init buttons
+    private void setButtons()
+    {
         // add restart and next level buttons
-        JButton nextLevel = new JButton("Next Level");
+        JButton nextLevel = new JButton("Next");
         JButton restart = new JButton("Restart");
+        JButton preLevel = new JButton("Previous");
         add(nextLevel);
         add(restart);
+        add(preLevel);
         restart.setBounds((600/2 - 100)/2, 600 - 100, 100, 50);
+        preLevel.setBounds((600/2 - 100)/2 + 600/4, 600 - 100, 100, 50);
         nextLevel.setBounds((600/2 - 100)/2 + 600/2, 600 - 100, 100, 50);
         
         restart.addActionListener(new ActionListener()
@@ -101,9 +111,27 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
                     displayToast("This is the final level.");
                 }
             }
-        }); 
+        });
         
-        initMap();
+        preLevel.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(level > 0)
+                {
+                    level--;
+                    initMap();
+                    update(getGraphics());
+                }
+                else
+                {
+                    displayToast("This is the first level.");
+                }
+                
+            }
+        });
     }
     
     // init map
@@ -121,7 +149,11 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         setFocusable(true);
         requestFocus();
         
-        // clear the screen and paint map
+        /* Clear the screen and paint map.
+         * paint() doesn't call super.paint() because of override.
+         * Call super.paint() here in order to avoid problems about
+         * buttons showing.
+         */
         super.paint(getGraphics());
         paint(getGraphics());
     }
@@ -194,8 +226,10 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
             return;
         }
         
+        // if box is in front of player
         if(map[playerRow - 1][playerCol] == GameMapFactory.BOX || map[playerRow - 1][playerCol] == GameMapFactory.BOXONEND)
         {
+            // if box can be push toward
             if(map[playerRow - 2][playerCol] == GameMapFactory.ROAD || map[playerRow - 2][playerCol] == GameMapFactory.END)
             {
                 // Save current map;
@@ -217,6 +251,7 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         }
         else
         {
+            // if road is in front of player
             if(map[playerRow - 1][playerCol] == GameMapFactory.ROAD || map[playerRow - 1][playerCol] == GameMapFactory.END)
             {
                 // Save current map;
@@ -243,8 +278,10 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
             return;
         }
         
+        // if box is in front of player
         if(map[playerRow + 1][playerCol] == GameMapFactory.BOX || map[playerRow + 1][playerCol] == GameMapFactory.BOXONEND)
         {
+            // if box can be push toward
             if(map[playerRow + 2][playerCol] == GameMapFactory.ROAD || map[playerRow + 2][playerCol] == GameMapFactory.END)
             {
                 // Save current map;
@@ -266,6 +303,7 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         }
         else
         {
+            // if road is in front of player
             if(map[playerRow + 1][playerCol] == GameMapFactory.ROAD || map[playerRow + 1][playerCol] == GameMapFactory.END)
             {
                 // Save current map;
@@ -292,8 +330,10 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
             return;
         }
         
+        // if box is in front of player
         if(map[playerRow][playerCol - 1] == GameMapFactory.BOX || map[playerRow][playerCol - 1] == GameMapFactory.BOXONEND)
         {
+            // if box can be push toward
             if(map[playerRow][playerCol - 2] == GameMapFactory.ROAD || map[playerRow][playerCol - 2] == GameMapFactory.END)
             {
                 // Save current map;
@@ -315,6 +355,7 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         }
         else
         {
+            // if road is in front of player
             if(map[playerRow][playerCol - 1] == GameMapFactory.ROAD || map[playerRow][playerCol - 1] == GameMapFactory.END)
             {
                 // Save current map;
@@ -341,8 +382,10 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
             return;
         }
         
+        // if box is in front of player
         if(map[playerRow][playerCol + 1] == GameMapFactory.BOX || map[playerRow][playerCol + 1] == GameMapFactory.BOXONEND)
         {
+            // if box can be push toward
             if(map[playerRow][playerCol + 2] == GameMapFactory.ROAD || map[playerRow][playerCol + 2] == GameMapFactory.END)
             {
                 // Save current map;
@@ -364,6 +407,7 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         }
         else
         {
+            // if road is in front of player
             if(map[playerRow][playerCol + 1] == GameMapFactory.ROAD || map[playerRow][playerCol + 1] == GameMapFactory.END)
             {
                 // Save current map;

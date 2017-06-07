@@ -1,8 +1,11 @@
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.regex.Pattern;
 
 public class GameSaver
 {   
@@ -15,7 +18,11 @@ public class GameSaver
         try
         {
             Files.createDirectory(Paths.get(dirPath));
-        } 
+        }
+        catch (FileAlreadyExistsException e)
+        {
+            // folder existed, do nothing
+        }
         catch (IOException e)
         {
             // TODO Auto-generated catch block
@@ -37,6 +44,48 @@ public class GameSaver
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    
+    public static GameMap gameLoad()
+    {
+        Path path = Paths.get(savePath);
+        String [] results = null;
+        String saveData = "";
+        int playerX = 0;
+        int playerY = 0;
+        int level = 0;
+        byte[][] map = null;
+        
+        if(Files.exists(path, LinkOption.NOFOLLOW_LINKS))
+        {
+            try
+            {
+                saveData = Files.readAllLines(path).get(0);
+            } catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            // no save file
+            return null;
+        }
+        
+        results = saveData.split(Pattern.quote("|"));
+        
+        // get level
+        level = Integer.parseInt(results[0]);
+        
+        // get player's position
+        playerX = Integer.parseInt(results[1]);
+        playerY = Integer.parseInt(results[2]);
+        
+        // get map
+        map = stringToMap(results);
+        
+        return new GameMap(playerX, playerY, map, level);
     }
     
     private static String mapToString(GameMap map)
@@ -67,5 +116,28 @@ public class GameSaver
         // End
         buffer.append("END");
         return buffer.toString();
+    }
+    
+    private static byte[][] stringToMap(String[] s)
+    {
+        // number of rows
+        int rowNumber = s.length - 4;
+        
+        // number of cols
+        int colNumber = s[3].length();
+        
+        // create map
+        byte [][] result = new byte[rowNumber][colNumber];
+        
+        for(int i = 0; i < rowNumber; i++)
+        {
+            for(int j = 0; j < colNumber; j++)
+            {
+                String temp = "" + s[i+3].charAt(j);
+                result[i][j] = Byte.parseByte(temp);
+            }
+        }
+        
+        return result;
     }
 }

@@ -11,6 +11,9 @@ import java.util.Stack;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 public class GameFrame extends JFrame implements MouseListener, KeyListener
@@ -55,6 +58,7 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
         setLocation(300, 20);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);      
         setLayout(null);
+        setMenu();
         setVisible(true);
         
         //get pics
@@ -132,6 +136,58 @@ public class GameFrame extends JFrame implements MouseListener, KeyListener
                 
             }
         });
+    }
+    
+    private void setMenu()
+    {
+        JMenuBar menuBar = new JMenuBar();      
+        JMenu file = new JMenu("File");
+        JMenuItem save = new JMenuItem("Save");
+        JMenuItem load = new JMenuItem("Load");
+        JMenuItem exit = new JMenuItem("Exit");
+        
+        save.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                GameSaver.gameSave(new GameMap(playerRow, playerCol, map, level));
+            }
+        });
+        
+        load.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                GameMap loadData = GameSaver.gameLoad();
+                level = loadData.getLevel();
+                playerRow = loadData.getPlayerX();
+                playerCol = loadData.getPlayerY();
+                map = loadData.getMap();
+                GameFrame.super.paint(getGraphics());
+                paint(getGraphics());
+            }
+        });
+        
+        exit.addActionListener(new ActionListener()
+        {
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                System.exit(0);
+            }
+        });
+        
+        menuBar.add(file);
+        file.add(save);
+        file.add(load);
+        file.addSeparator();
+        file.add(exit);
+        setJMenuBar(menuBar);
     }
     
     // init map
